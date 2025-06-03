@@ -1,38 +1,44 @@
-# HATHOR AI Guardian 🛡️
+# 🛡️ HATHOR AI Guardian
 
 **Advanced AI-Powered Fraud Detection System for Blockchain Networks**
 
-HATHOR AI Guardian is a comprehensive fraud detection platform that combines machine learning with blockchain technology to provide real-time security monitoring and automated threat response across Hathor Network and Ethereum ecosystems.
+HATHOR AI Guardian is a comprehensive fraud detection system designed specifically for blockchain networks, with primary focus on the Hathor network. It combines machine learning, real-time monitoring, and advanced analytics to detect and prevent fraudulent transactions.
 
-## 🌟 Features
+## 🚀 Features
 
-- **Real-time Fraud Detection**: Advanced ML models analyzing transaction patterns
-- **Multi-blockchain Support**: Hathor Network nano-contracts and Ethereum smart contracts
-- **Automated Response System**: Smart contract-based automatic fraud mitigation
-- **Interactive Dashboard**: Real-time monitoring and analytics interface
-- **RESTful API**: Easy integration with existing systems
-- **Scalable Architecture**: Microservices-based design for high performance
+- **Multi-Model AI Detection**: Ensemble approach using Isolation Forest, Random Forest, and Neural Networks
+- **Real-Time Monitoring**: Live transaction monitoring with Socket.IO integration
+- **Batch Processing**: Efficient analysis of multiple transactions
+- **Risk Scoring**: Comprehensive address and transaction risk assessment
+- **Interactive Dashboard**: Real-time visualization of fraud detection metrics
+- **RESTful API**: Complete API for integration with external systems
+- **Scalable Architecture**: Microservices-based design with Docker support
 
 ## 🏗️ Architecture
 
 ```
-hathor-ai-guardian/
-├── ai-engine/          # ML models and training scripts
-├── contracts/          # Smart contracts (Hathor & Ethereum)
-├── backend/           # Node.js API server
-├── frontend/          # React dashboard
-├── docs/             # Documentation
-└── scripts/          # Deployment and utility scripts
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│    Frontend     │    │    Backend      │    │   AI Engine     │
+│   (React.js)    │◄──►│   (Express.js)  │◄──►│   (FastAPI)     │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+                              │                         │
+                       ┌─────────────────┐    ┌─────────────────┐
+                       │    MongoDB      │    │     Redis       │
+                       │   (Database)    │    │    (Cache)      │
+                       └─────────────────┘    └─────────────────┘
 ```
 
-## 🚀 Quick Start
+## 📦 Installation
 
 ### Prerequisites
-- Node.js 18+
-- Python 3.9+
-- Docker (optional)
 
-### Installation
+- Node.js 18+ and npm
+- Python 3.11+
+- Docker and Docker Compose
+- MongoDB 7.0+
+- Redis 7.2+
+
+### Quick Start with Docker
 
 1. **Clone the repository**
    ```bash
@@ -40,163 +46,298 @@ hathor-ai-guardian/
    cd hathor-ai-guardian
    ```
 
-2. **Install all dependencies**
-   ```bash
-   npm run install:all
-   ```
-
-3. **Set up environment variables**
+2. **Set up environment variables**
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
    ```
 
-4. **Start development servers**
+3. **Start with Docker Compose**
    ```bash
+   docker-compose up -d
+   ```
+
+4. **Access the application**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:5000
+   - AI Engine: http://localhost:8001
+
+### Manual Installation
+
+1. **Backend Setup**
+   ```bash
+   cd backend
+   npm install
    npm run dev
    ```
 
-## 📦 Components
+2. **AI Engine Setup**
+   ```bash
+   cd ai-engine
+   pip install -r requirements.txt
+   uvicorn api.fraud_api:app --reload --port 8001
+   ```
 
-### AI Engine
-- **Fraud Detection Model**: Advanced neural network for pattern recognition
-- **Real-time Processing**: Stream processing for live transaction analysis
-- **Model Training**: Automated retraining pipeline with new data
-
-### Smart Contracts
-- **Hathor Nano-contracts**: Lightweight fraud response mechanisms
-- **Ethereum Contracts**: Comprehensive fraud detection and mitigation
-- **Cross-chain Integration**: Seamless operation across networks
-
-### API Server
-- **FastAPI Backend**: High-performance Python API
-- **Real-time WebSocket**: Live fraud alerts and updates
-- **RESTful Endpoints**: Standard API for integration
-
-### Frontend Dashboard
-- **React Interface**: Modern, responsive web application
-- **Real-time Charts**: Live fraud detection analytics
-- **Alert Management**: Comprehensive fraud alert handling
+3. **Frontend Setup**
+   ```bash
+   cd frontend
+   npm install
+   npm start
+   ```
 
 ## 🔧 Configuration
 
 ### Environment Variables
-```env
-# Database
-DATABASE_URL=postgresql://user:pass@localhost/hathor_guardian
 
-# Blockchain Networks
-HATHOR_NODE_URL=https://node1.hathor.network
-ETHEREUM_RPC_URL=https://mainnet.infura.io/v3/your-key
+Key environment variables to configure:
+
+```env
+# Server
+NODE_ENV=development
+PORT=5000
+
+# Database
+MONGODB_URI=mongodb://localhost:27017/hathor_guardian
+REDIS_HOST=localhost
 
 # AI Engine
-MODEL_PATH=./ai-engine/models/fraud_detector.pkl
-CONFIDENCE_THRESHOLD=0.85
+AI_ENGINE_URL=http://localhost:8001
 
-# API
-API_HOST=0.0.0.0
-API_PORT=8000
+# Security
+JWT_SECRET=your-secret-key
 ```
 
-## 📊 Usage Examples
+### Model Configuration
 
-### Python SDK
+The AI models can be configured in `ai-engine/config/model_config.py`:
+
 ```python
-from hathor_guardian import FraudDetector
-
-detector = FraudDetector()
-result = detector.analyze_transaction({
-    'from': 'H...',
-    'to': 'H...',
-    'amount': 1000,
-    'timestamp': 1640995200
-})
-
-if result.is_fraud:
-    print(f"Fraud detected! Confidence: {result.confidence}")
+MODEL_CONFIG = {
+    'fraud_threshold': 0.5,
+    'ensemble_weights': [0.3, 0.4, 0.3],
+    'retrain_interval': 86400  # 24 hours
+}
 ```
 
-### REST API
+## 📊 API Documentation
+
+### Fraud Detection Endpoints
+
+#### Analyze Single Transaction
+```http
+POST /api/fraud/analyze
+Content-Type: application/json
+
+{
+  "tx_hash": "abc123...",
+  "amount": 1000.0,
+  "sender": "0x123...",
+  "receiver": "0x456...",
+  "timestamp": 1234567890
+}
+```
+
+#### Batch Analysis
+```http
+POST /api/fraud/batch-analyze
+Content-Type: application/json
+
+{
+  "transactions": [...]
+}
+```
+
+### Analytics Endpoints
+
+#### Get Detection Summary
+```http
+GET /api/analytics/summary
+```
+
+#### Get Risk Metrics
+```http
+GET /api/analytics/risk-metrics
+```
+
+### Real-time Updates
+
+Connect to Socket.IO for real-time fraud alerts:
+
+```javascript
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:5000');
+socket.emit('subscribe_alerts');
+socket.on('fraud_alert', (data) => {
+  console.log('Fraud detected:', data);
+});
+```
+
+## 🤖 Machine Learning Models
+
+### Ensemble Approach
+
+The system uses three complementary models:
+
+1. **Isolation Forest**: Unsupervised anomaly detection
+2. **Random Forest**: Supervised classification with feature importance
+3. **Neural Network**: Deep learning for complex pattern recognition
+
+### Feature Engineering
+
+Key features extracted for fraud detection:
+
+- Transaction amount and frequency patterns
+- Temporal features (hour, day of week)
+- Address risk scores and history
+- Network congestion metrics
+- Behavioral patterns
+
+### Model Training
+
 ```bash
-curl -X POST "http://localhost:8000/api/analyze" \
+# Train models with new data
+curl -X POST http://localhost:8001/model/retrain \
   -H "Content-Type: application/json" \
-  -d '{
-    "transaction": {
-      "hash": "abc123...",
-      "from": "H...",
-      "to": "H...",
-      "amount": 1000
-    }
-  }'
+  -d '{"retrain_type": "full"}'
 ```
 
-## 🧪 Testing
+## 📈 Monitoring and Metrics
 
-```bash
-# Run all tests
-npm run test
+### Dashboard Features
 
-# Run specific test suites
-npm run test:ai        # AI engine tests
-npm run test:contracts # Smart contract tests
-npm run test:api       # API tests
-npm run test:frontend  # Frontend tests
-```
+- Real-time fraud detection statistics
+- Transaction volume and patterns
+- Model performance metrics
+- Alert management interface
+- Risk score distributions
 
-## 🚢 Deployment
+### Performance Metrics
 
-### Docker Deployment
-```bash
-docker-compose up -d
-```
-
-### Manual Deployment
-```bash
-# Build frontend
-npm run build:frontend
-
-# Deploy contracts
-npm run deploy:contracts
-
-# Start production server
-npm run start:prod
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📈 Performance
-
-- **Transaction Analysis**: <100ms average response time
-- **Throughput**: 10,000+ transactions per second
-- **Accuracy**: 99.2% fraud detection rate
-- **False Positives**: <0.5%
+- Detection accuracy: >95%
+- False positive rate: <5%
+- Average processing time: <100ms
+- Throughput: 1000+ transactions/second
 
 ## 🔒 Security
 
-- End-to-end encryption for all communications
-- Multi-signature wallet integration
-- Comprehensive audit logs
-- Zero-knowledge proof compatibility
+### Authentication
+
+The system supports JWT-based authentication:
+
+```javascript
+// Login request
+const response = await fetch('/api/auth/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ username, password })
+});
+```
+
+### Rate Limiting
+
+API endpoints are protected with rate limiting:
+- 100 requests per 15 minutes per IP
+- Configurable limits per endpoint
+
+## 🧪 Testing
+
+### Backend Tests
+```bash
+cd backend
+npm test
+```
+
+### AI Engine Tests
+```bash
+cd ai-engine
+pytest tests/
+```
+
+### Integration Tests
+```bash
+docker-compose -f docker-compose.test.yml up --abort-on-container-exit
+```
+
+## 🚀 Deployment
+
+### Production Deployment
+
+1. **Build Docker images**
+   ```bash
+   docker-compose -f docker-compose.prod.yml build
+   ```
+
+2. **Deploy to production**
+   ```bash
+   docker-compose -f docker-compose.prod.yml up -d
+   ```
+
+### Kubernetes Deployment
+
+Kubernetes manifests are available in the `k8s/` directory:
+
+```bash
+kubectl apply -f k8s/
+```
+
+## 📝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/new-feature`
+3. Commit changes: `git commit -am 'Add new feature'`
+4. Push to branch: `git push origin feature/new-feature`
+5. Submit a pull request
+
+### Development Guidelines
+
+- Follow ESLint rules for JavaScript
+- Use Black formatter for Python code
+- Write tests for new features
+- Update documentation
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Database Connection Error**
+```bash
+# Check MongoDB status
+docker-compose logs mongodb
+
+# Restart MongoDB
+docker-compose restart mongodb
+```
+
+**AI Model Loading Error**
+```bash
+# Check AI engine logs
+docker-compose logs ai-engine
+
+# Retrain models
+curl -X POST http://localhost:8001/model/retrain
+```
+
+**High Memory Usage**
+- Adjust batch sizes in configuration
+- Enable model pruning
+- Use lighter model variants
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
+
+## 🤝 Support
+
+- **Issues**: [GitHub Issues](https://github.com/Surjeet4146/hathor-ai-guardian/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/Surjeet4146/hathor-ai-guardian/discussions)
 
 ## 🙏 Acknowledgments
 
-- Hathor Network team for blockchain infrastructure
-- OpenAI for AI research foundations
-- Community contributors and testers
+- Hathor Network team for blockchain support
+- TensorFlow and Scikit-learn communities
+- Open source contributors
 
-## 📞 Support
+---
 
-- 📧 Email: 22mc3034@rgipt.ac.in
-- 💬 Discord: https://discord.gg/hathor-guardian
-
-**Built with ❤️ for a safer blockchain ecosystem**
+**Built with ❤️ for blockchain security**
