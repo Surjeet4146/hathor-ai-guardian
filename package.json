@@ -1,32 +1,60 @@
 {
   "name": "hathor-ai-guardian",
   "version": "1.0.0",
-  "description": "Advanced AI-Powered Fraud Detection System for Blockchain Networks",
-  "main": "index.js",
+  "description": "AI-powered fraud detection system for blockchain networks",
+  "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" \"npm run dev:ai\"",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:ai\" \"npm run dev:frontend\"",
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm start",
-    "dev:ai": "cd ai-engine && python -m uvicorn api.fraud_api:app --reload --port 8001",
+    "dev:ai": "cd ai-engine && uvicorn api.fraud_api:app --reload --port 8001",
     "build": "npm run build:frontend && npm run build:backend",
     "build:frontend": "cd frontend && npm run build",
     "build:backend": "cd backend && npm run build",
-    "start": "npm run start:backend",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:ai\"",
     "start:backend": "cd backend && npm start",
-    "start:ai": "cd ai-engine && python -m uvicorn api.fraud_api:app --host 0.0.0.0 --port 8001",
-    "test": "npm run test:backend && npm run test:frontend && npm run test:ai && npm run test:contracts",
+    "start:ai": "cd ai-engine && uvicorn api.fraud_api:app --host 0.0.0.0 --port 8001",
+    "test": "npm run test:backend && npm run test:ai",
     "test:backend": "cd backend && npm test",
     "test:frontend": "cd frontend && npm test",
-    "test:ai": "cd ai-engine && python -m pytest tests/",
-    "test:contracts": "cd contracts && npm test",
-    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install && cd ../contracts && npm install && cd ../ai-engine && pip install -r requirements.txt",
-    "deploy:contracts": "cd contracts && npm run deploy",
-    "lint": "npm run lint:backend && npm run lint:frontend",
+    "test:ai": "cd ai-engine && pytest",
+    "lint": "npm run lint:backend && npm run lint:frontend && npm run lint:ai",
     "lint:backend": "cd backend && npm run lint",
     "lint:frontend": "cd frontend && npm run lint",
+    "lint:ai": "cd ai-engine && flake8 .",
+    "format": "npm run format:backend && npm run format:ai",
+    "format:backend": "cd backend && npm run lint:fix",
+    "format:ai": "cd ai-engine && black .",
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down"
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "setup": "npm run setup:backend && npm run setup:frontend && npm run setup:ai",
+    "setup:backend": "cd backend && npm install",
+    "setup:frontend": "cd frontend && npm install",
+    "setup:ai": "cd ai-engine && pip install -r requirements.txt",
+    "clean": "npm run clean:backend && npm run clean:frontend && npm run clean:ai",
+    "clean:backend": "cd backend && rm -rf node_modules",
+    "clean:frontend": "cd frontend && rm -rf node_modules build",
+    "clean:ai": "cd ai-engine && find . -type d -name __pycache__ -delete",
+    "health": "curl -f http://localhost:5000/health && curl -f http://localhost:8001/health",
+    "seed": "cd backend && npm run seed",
+    "migrate": "cd backend && npm run migrate"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/hathor-ai-guardian.git"
   },
   "keywords": [
     "blockchain",
@@ -34,25 +62,8 @@
     "ai",
     "machine-learning",
     "hathor",
-    "ethereum",
     "security"
   ],
   "author": "HATHOR AI Guardian Team",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/hathor-ai-guardian.git"
-  },
-  "bugs": {
-    "url": "https://github.com/yourusername/hathor-ai-guardian/issues"
-  },
-  "homepage": "https://github.com/yourusername/hathor-ai-guardian#readme",
-  "devDependencies": {
-    "concurrently": "^7.6.0",
-    "cross-env": "^7.0.3"
-  },
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=8.0.0"
-  }
+  "license": "MIT"
 }
