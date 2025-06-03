@@ -54,7 +54,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/hathor-ai-guardian.git"
+    "url": "https://github.com/Surjeet4146/hathor-ai-guardian.git"
   },
   "keywords": [
     "blockchain",
@@ -64,6 +64,6 @@
     "hathor",
     "security"
   ],
-  "author": "HATHOR AI Guardian Team",
+  "author": "Surjeet",
   "license": "MIT"
 }
